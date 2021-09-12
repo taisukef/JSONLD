@@ -1,2 +1,3 @@
 import jsonld from "./lib/jsonld.js";
-export default jsonld;
+const JSONLD = jsonld;
+export { JSONLD };

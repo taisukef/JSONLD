@@ -1,15 +1,11 @@
-jsonld.js
+jsonld-es
 =========
-
-[![Build status](https://img.shields.io/github/workflow/status/digitalbazaar/jsonld.js/Node.js%20CI)](https://github.com/digitalbazaar/jsonld.js/actions?query=workflow%3A%22Node.js+CI%22)
-[![Coverage status](https://img.shields.io/codecov/c/github/digitalbazaar/jsonld.js)](https://codecov.io/gh/digitalbazaar/jsonld.js)
-[![Dependency Status](https://img.shields.io/david/digitalbazaar/jsonld.js.svg)](https://david-dm.org/digitalbazaar/jsonld.js)
 
 Introduction
 ------------
 
 This library is an implementation of the [JSON-LD][] specification in
-JavaScript.
+JavaScript ES module.
 
 JSON, as specified in [RFC7159][], is a simple language for representing
 objects on the Web. Linked Data is a way of describing content across
@@ -81,108 +77,10 @@ and development time and resources permit.
 The [test runner][] is often updated to note or skip newer tests that are not
 yet supported.
 
-Installation
-------------
-
-### Node.js + npm
-
-```
-npm install jsonld
-```
-
-```js
-const jsonld = require('jsonld');
-```
-
-### Browser (bundler) + npm
-
-```
-npm install jsonld
-```
-
-Use your favorite bundling technology ([webpack][], [Rollup][], etc) to
-directly bundle your code that loads `jsonld`. Note that you will need support
-for ES2017+ code.
-
-### Browser Bundles
-
-The built npm package includes bundled code suitable for use in browsers. Two
-versions are provided:
-
-- `./dist/jsonld.min.js`: A version built for wide compatibility with modern
-  and older browsers.  Includes many polyfills and code transformations and is
-  larger and less efficient.
-- `./dist/jsonld.esm.min.js`: A version built for features available in
-  browsers that support ES Modules. Fewer polyfills and transformations are
-  required making the code smaller and more efficient.
-
-The two bundles can be used at the same to to allow modern browsers to use
-newer code. Lookup using `script` tags with `type="module"` and `nomodule`.
-
-Also see the `webpack.config.js` if you would like to make a custom bundle for
-specific targets.
-
-#### Browser (AMD) + npm
-
-```
-npm install jsonld
-```
-
-Use your favorite technology to load `node_modules/dist/jsonld.min.js`.
-
-#### CDNJS CDN
-
-To use [CDNJS](https://cdnjs.com/) include this script tag:
-
-```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsonld/1.0.0/jsonld.min.js"></script>
-```
-
-Check https://cdnjs.com/libraries/jsonld for the latest available version.
-
-#### jsDeliver CDN
-
-To use [jsDeliver](https://www.jsdelivr.com/) include this script tag:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/jsonld@1.0.0/dist/jsonld.min.js"></script>
-```
-
-See https://www.jsdelivr.com/package/npm/jsonld for the latest available version.
-
-#### unpkg CDN
-
-To use [unpkg](https://unpkg.com/) include this script tag:
-
-```html
-
-<script src="https://unpkg.com/jsonld@1.0.0/dist/jsonld.min.js"></script>
-```
-
-See https://unpkg.com/jsonld/ for the latest available version.
-
-### JSPM
+### Browsers and Deno
 
 ``` js
-import jsonld from './index.js';
-// or
-import {promises} from 'jsonld';
-// or
-import {JsonLdProcessor} from 'jsonld';
-```
-
-### Node.js native canonize bindings
-
-For specialized use cases there is an optional [rdf-canonize-native][] package
-available which provides a native implementation for `canonize()`. It is used
-by installing the package and setting the `useNative` option of `canonize()` to
-`true`. Before using this mode it is **highly recommended** to run benchmarks
-since the JavaScript implementation is often faster and the bindings add
-toolchain complexity.
-
-```
-npm install jsonld
-npm install rdf-canonize-native
+import { JSONLD } from "https://taisukef.github.io/jsonld-es/jsonld-es";
 ```
 
 Examples
@@ -206,7 +104,7 @@ const context = {
 
 ```js
 // compact a document according to a particular context
-const compacted = await jsonld.compact(doc, context);
+const compacted = await JSONLD.compact(doc, context);
 console.log(JSON.stringify(compacted, null, 2));
 /* Output:
 {
@@ -218,7 +116,7 @@ console.log(JSON.stringify(compacted, null, 2));
 */
 
 // compact using URLs
-const compacted = await jsonld.compact(
+const compacted = await JSONLD.compact(
   'http://example.org/doc', 'http://example.org/context', ...);
 ```
 
@@ -226,7 +124,7 @@ const compacted = await jsonld.compact(
 
 ```js
 // expand a document, removing its context
-const expanded = await jsonld.expand(compacted);
+const expanded = await JSONLD.expand(compacted);
 console.log(JSON.stringify(expanded, null, 2));
 /* Output:
 {
@@ -237,14 +135,14 @@ console.log(JSON.stringify(expanded, null, 2));
 */
 
 // expand using URLs
-const expanded = await jsonld.expand('http://example.org/doc', ...);
+const expanded = await JSONLD.expand('http://example.org/doc', ...);
 ```
 
 ### [flatten](http://json-ld.org/spec/latest/json-ld/#flattened-document-form)
 
 ```js
 // flatten a document
-const flattened = await jsonld.flatten(doc);
+const flattened = await JSONLD.flatten(doc);
 console.log(JSON.stringify(flattened, null, 2));
 // output has all deep-level trees flattened to the top-level
 /*
@@ -275,7 +173,7 @@ console.log(JSON.stringify(flattened, null, 2));
 
 ```js
 // frame a document
-const framed = await jsonld.frame(doc, frame);
+const framed = await JSONLD.frame(doc, frame);
 console.log(JSON.stringify(framed, null, 2));
 // output transformed into a particular tree structure per the given frame
 /*
@@ -306,7 +204,7 @@ console.log(JSON.stringify(framed, null, 2));
 ```js
 // canonize (normalize) a document using the RDF Dataset Normalization Algorithm
 // (URDNA2015), see:
-const canonized = await jsonld.canonize(doc, {
+const canonized = await JSONLD.canonize(doc, {
   algorithm: 'URDNA2015',
   format: 'application/n-quads'
 });
@@ -324,7 +222,7 @@ _:c14n0 <http://schema.org/url> <http://manu.sporny.org/> .
 
 ```js
 // serialize a document to N-Quads (RDF)
-const nquads = await jsonld.toRDF(doc, { format: 'application/n-quads' });
+const nquads = await JSONLD.toRDF(doc, { format: 'application/n-quads' });
 console.log(nquads);
 // nquads is a string of N-Quads
 /*
@@ -338,7 +236,7 @@ _:b0 <http://schema.org/url> <http://manu.sporny.org/> .
 
 ```js
 // deserialize N-Quads (RDF) to JSON-LD
-const doc = await jsonld.fromRDF(nquads, { format: 'application/n-quads' });
+const doc = await JSONLD.fromRDF(nquads, { format: 'application/n-quads' });
 console.log(JSON.stringify(doc));
 // doc is JSON-LD
 /*
@@ -369,14 +267,14 @@ console.log(JSON.stringify(doc));
 
 ```js
 // register a custom synchronous RDF parser
-jsonld.registerRDFParser(contentType, input => {
-  // parse input to a jsonld.js RDF dataset object... and return it
+JSONLD.registerRDFParser(contentType, input => {
+  // parse input to a jsonld-es RDF dataset object... and return it
   return dataset;
 });
 
 // register a custom promise-based RDF parser
-jsonld.registerRDFParser(contentType, async input => {
-  // parse input into a jsonld.js RDF dataset object...
+JSONLD.registerRDFParser(contentType, async input => {
+  // parse input into a jsonld-es RDF dataset object...
   return new Promise(...);
 });
 ```
@@ -395,8 +293,8 @@ const CONTEXTS = {
 };
 
 // grab the built-in Node.js doc loader
-const nodeDocumentLoader = jsonld.documentLoaders.node();
-// or grab the XHR one: jsonld.documentLoaders.xhr()
+const nodeDocumentLoader = JSONLD.documentLoaders.node();
+// or grab the XHR one: JSONLD.documentLoaders.xhr()
 
 // change the default document loader
 const customLoader = async (url, options) => {
@@ -410,10 +308,10 @@ const customLoader = async (url, options) => {
   // call the default documentLoader
   return nodeDocumentLoader(url);
 };
-jsonld.documentLoader = customLoader;
+JSONLD.documentLoader = customLoader;
 
 // alternatively, pass the custom loader for just a specific call:
-const compacted = await jsonld.compact(
+const compacted = await JSONLD.compact(
   doc, context, { documentLoader: customLoader });
 ```
 
@@ -421,13 +319,13 @@ const compacted = await jsonld.compact(
 
 It is recommended to set a default `user-agent` header for Node.js
 applications. The default for the default Node.js document loader is
-`jsonld.js`.
+`jsonld-es`.
 
 Related Modules
 ---------------
 
 * [jsonld-cli][]: A command line interface tool called `jsonld` that exposes
-  most of the basic jsonld.js API.
+  most of the basic jsonld-es API.
 * [jsonld-request][]: A module that can read data from stdin, URLs, and files
   and in various formats and return JSON-LD.
 
@@ -443,7 +341,8 @@ Source
 The source code for the JavaScript implementation of the JSON-LD API
 is available at:
 
-https://github.com/digitalbazaar/jsonld.js
+- https://github.com/taisukef/jsonld-es
+- forked https://github.com/digitalbazaar/jsonld.js
 
 Tests
 -----
@@ -459,7 +358,7 @@ the following:
     https://github.com/json-ld/json-ld.org
     https://github.com/json-ld/normalization
 
-They should be sibling directories of the jsonld.js directory or in a
+They should be sibling directories of the jsonld-es directory or in a
 `test-suites` dir. To clone shallow copies into the `test-suites` dir you can
 use the following:
 

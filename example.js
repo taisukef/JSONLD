@@ -1,4 +1,4 @@
-import JSONLD from "./JSONLD.js";
+import { JSONLD } from "./JSONLD.js";
 
 const doc = {
   "@id": "https://example.com/1",
