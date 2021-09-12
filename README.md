@@ -163,12 +163,8 @@ See https://unpkg.com/jsonld/ for the latest available version.
 
 ### JSPM
 
-```
-jspm install npm:jsonld
-```
-
 ``` js
-import * as jsonld from 'jsonld';
+import jsonld from './index.js';
 // or
 import {promises} from 'jsonld';
 // or
@@ -231,6 +227,7 @@ const compacted = await jsonld.compact(
 ```js
 // expand a document, removing its context
 const expanded = await jsonld.expand(compacted);
+console.log(JSON.stringify(expanded, null, 2));
 /* Output:
 {
   "http://schema.org/name": [{"@value": "Manu Sporny"}],
@@ -248,7 +245,30 @@ const expanded = await jsonld.expand('http://example.org/doc', ...);
 ```js
 // flatten a document
 const flattened = await jsonld.flatten(doc);
+console.log(JSON.stringify(flattened, null, 2));
 // output has all deep-level trees flattened to the top-level
+/*
+[
+  {
+    "@id": "_:b0",
+    "http://schema.org/image": [
+      {
+        "@id": "http://manu.sporny.org/images/manu.png"
+      }
+    ],
+    "http://schema.org/name": [
+      {
+        "@value": "Manu Sporny"
+      }
+    ],
+    "http://schema.org/url": [
+      {
+        "@id": "http://manu.sporny.org/"
+      }
+    ]
+  }
+]
+*/
 ```
 
 ### [frame](http://json-ld.org/spec/latest/json-ld-framing/#introduction)
@@ -256,7 +276,29 @@ const flattened = await jsonld.flatten(doc);
 ```js
 // frame a document
 const framed = await jsonld.frame(doc, frame);
+console.log(JSON.stringify(framed, null, 2));
 // output transformed into a particular tree structure per the given frame
+/*
+{
+  "@graph": [
+    {
+      "http://schema.org/image": {
+        "@id": "http://manu.sporny.org/images/manu.png"
+      },
+      "http://schema.org/name": "Manu Sporny",
+      "http://schema.org/url": {
+        "@id": "http://manu.sporny.org/"
+      }
+    },
+    {
+      "@id": "http://manu.sporny.org/"
+    },
+    {
+      "@id": "http://manu.sporny.org/images/manu.png"
+    }
+  ]
+}
+*/
 ```
 
 ### <a name="canonize"></a>[canonize](http://json-ld.github.io/normalization/spec/) (normalize)
@@ -268,24 +310,59 @@ const canonized = await jsonld.canonize(doc, {
   algorithm: 'URDNA2015',
   format: 'application/n-quads'
 });
+console.log(canonized);
 // canonized is a string that is a canonical representation of the document
 // that can be used for hashing, comparison, etc.
+/*
+_:c14n0 <http://schema.org/image> <http://manu.sporny.org/images/manu.png> .
+_:c14n0 <http://schema.org/name> "Manu Sporny" .
+_:c14n0 <http://schema.org/url> <http://manu.sporny.org/> .
+*/
 ```
 
 ### <a name="tordf"></a>toRDF (N-Quads)
 
 ```js
 // serialize a document to N-Quads (RDF)
-const nquads = await jsonld.toRDF(doc, {format: 'application/n-quads'});
+const nquads = await jsonld.toRDF(doc, { format: 'application/n-quads' });
+console.log(nquads);
 // nquads is a string of N-Quads
+/*
+_:b0 <http://schema.org/image> <http://manu.sporny.org/images/manu.png> .
+_:b0 <http://schema.org/name> "Manu Sporny" .
+_:b0 <http://schema.org/url> <http://manu.sporny.org/> .
+*/
 ```
 
 ### <a name="fromrdf"></a>fromRDF (N-Quads)
 
 ```js
 // deserialize N-Quads (RDF) to JSON-LD
-const doc = await jsonld.fromRDF(nquads, {format: 'application/n-quads'});
+const doc = await jsonld.fromRDF(nquads, { format: 'application/n-quads' });
+console.log(JSON.stringify(doc));
 // doc is JSON-LD
+/*
+[
+  {
+    "@id": "_:b0",
+    "http://schema.org/image": [
+      {
+        "@id": "http://manu.sporny.org/images/manu.png"
+      }
+    ],
+    "http://schema.org/name": [
+      {
+        "@value": "Manu Sporny"
+      }
+    ],
+    "http://schema.org/url": [
+      {
+        "@id": "http://manu.sporny.org/"
+      }
+    ]
+  }
+]
+*/
 ```
 
 ### Custom RDF Parser
@@ -323,7 +400,7 @@ const nodeDocumentLoader = jsonld.documentLoaders.node();
 
 // change the default document loader
 const customLoader = async (url, options) => {
-  if(url in CONTEXTS) {
+  if (url in CONTEXTS) {
     return {
       contextUrl: null, // this is for a context via a link header
       document: CONTEXTS[url], // this is the actual document that was loaded
@@ -337,7 +414,7 @@ jsonld.documentLoader = customLoader;
 
 // alternatively, pass the custom loader for just a specific call:
 const compacted = await jsonld.compact(
-  doc, context, {documentLoader: customLoader});
+  doc, context, { documentLoader: customLoader });
 ```
 
 ### Node.js Document Loader User-Agent
@@ -366,7 +443,7 @@ Source
 The source code for the JavaScript implementation of the JSON-LD API
 is available at:
 
-http://github.com/digitalbazaar/jsonld.js
+https://github.com/digitalbazaar/jsonld.js
 
 Tests
 -----
