@@ -80,7 +80,7 @@ yet supported.
 ### Browsers and Deno
 
 ``` js
-import { JSONLD } from "https://taisukef.github.io/jsonld-es/jsonld-es";
+import { JSONLD } from "https://taisukef.github.io/jsonld-es/JSONLD.js";
 ```
 
 Examples
@@ -108,16 +108,50 @@ const compacted = await JSONLD.compact(doc, context);
 console.log(JSON.stringify(compacted, null, 2));
 /* Output:
 {
-  "@context": {...},
+  "@context": {
+    "name": "http://schema.org/name",
+    "homepage": {
+      "@id": "http://schema.org/url",
+      "@type": "@id"
+    },
+    "image": {
+      "@id": "http://schema.org/image",
+      "@type": "@id"
+    }
+  },
+  "@id": "https://example.com/1",
+  "image": "http://manu.sporny.org/images/manu.png",
   "name": "Manu Sporny",
-  "homepage": "http://manu.sporny.org/",
-  "image": "http://manu.sporny.org/images/manu.png"
+  "homepage": "http://manu.sporny.org/"
 }
 */
 
 // compact using URLs
 const compacted = await JSONLD.compact(
   'http://example.org/doc', 'http://example.org/context', ...);
+console.log(JSON.stringify(compacted, null, 2));
+/*
+[
+  {
+    "@id": "https://example.com/1",
+    "http://schema.org/url": [
+      {
+        "@id": "http://manu.sporny.org/"
+      }
+    ],
+    "http://schema.org/image": [
+      {
+        "@id": "http://manu.sporny.org/images/manu.png"
+      }
+    ],
+    "http://schema.org/name": [
+      {
+        "@value": "Manu Sporny"
+      }
+    ]
+  }
+]
+*/
 ```
 
 ### [expand](http://json-ld.org/spec/latest/json-ld/#expanded-document-form)
@@ -148,7 +182,7 @@ console.log(JSON.stringify(flattened, null, 2));
 /*
 [
   {
-    "@id": "_:b0",
+    "@id": "https://example.com/1",
     "http://schema.org/image": [
       {
         "@id": "http://manu.sporny.org/images/manu.png"
@@ -180,6 +214,13 @@ console.log(JSON.stringify(framed, null, 2));
 {
   "@graph": [
     {
+      "@id": "http://manu.sporny.org/"
+    },
+    {
+      "@id": "http://manu.sporny.org/images/manu.png"
+    },
+    {
+      "@id": "https://example.com/1",
       "http://schema.org/image": {
         "@id": "http://manu.sporny.org/images/manu.png"
       },
@@ -187,12 +228,6 @@ console.log(JSON.stringify(framed, null, 2));
       "http://schema.org/url": {
         "@id": "http://manu.sporny.org/"
       }
-    },
-    {
-      "@id": "http://manu.sporny.org/"
-    },
-    {
-      "@id": "http://manu.sporny.org/images/manu.png"
     }
   ]
 }
@@ -212,9 +247,9 @@ console.log(canonized);
 // canonized is a string that is a canonical representation of the document
 // that can be used for hashing, comparison, etc.
 /*
-_:c14n0 <http://schema.org/image> <http://manu.sporny.org/images/manu.png> .
-_:c14n0 <http://schema.org/name> "Manu Sporny" .
-_:c14n0 <http://schema.org/url> <http://manu.sporny.org/> .
+<https://example.com/1> <http://schema.org/image> <http://manu.sporny.org/images/manu.png> .
+<https://example.com/1> <http://schema.org/name> "Manu Sporny" .
+<https://example.com/1> <http://schema.org/url> <http://manu.sporny.org/> .
 */
 ```
 
@@ -226,9 +261,9 @@ const nquads = await JSONLD.toRDF(doc, { format: 'application/n-quads' });
 console.log(nquads);
 // nquads is a string of N-Quads
 /*
-_:b0 <http://schema.org/image> <http://manu.sporny.org/images/manu.png> .
-_:b0 <http://schema.org/name> "Manu Sporny" .
-_:b0 <http://schema.org/url> <http://manu.sporny.org/> .
+<https://example.com/1> <http://schema.org/image> <http://manu.sporny.org/images/manu.png> .
+<https://example.com/1> <http://schema.org/name> "Manu Sporny" .
+<https://example.com/1> <http://schema.org/url> <http://manu.sporny.org/> .
 */
 ```
 
@@ -242,7 +277,7 @@ console.log(JSON.stringify(doc));
 /*
 [
   {
-    "@id": "_:b0",
+    "@id": "https://example.com/1",
     "http://schema.org/image": [
       {
         "@id": "http://manu.sporny.org/images/manu.png"
