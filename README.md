@@ -77,14 +77,14 @@ and development time and resources permit.
 The [test runner][] is often updated to note or skip newer tests that are not
 yet supported.
 
-### Browsers and Deno
-
-``` js
-import { JSONLD } from "https://taisukef.github.io/jsonld-es/JSONLD.js";
-```
 
 Examples
 --------
+
+How to import on browsers and Deno
+``` js
+import { JSONLD } from "https://taisukef.github.io/jsonld-es/JSONLD.js";
+```
 
 Example data and context used throughout examples below:
 ```js

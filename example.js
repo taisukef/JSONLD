@@ -30,10 +30,10 @@ const canonized = await JSONLD.canonize(doc, {
 });
 console.log(canonized);
 
-const nquads = await JSONLD.toRDF(doc, { format: 'application/n-quads' });
+const nquads = await JSONLD.toRDF(doc, { format: "application/n-quads" });
 console.log(nquads);
 
-const doc2 = await JSONLD.fromRDF(nquads, { format: 'application/n-quads' });
+const doc2 = await JSONLD.fromRDF(nquads, { format: "application/n-quads" });
 console.log(JSON.stringify(doc2, null, 2));
 
 const nquads2 = await JSONLD.toRDF(doc);
