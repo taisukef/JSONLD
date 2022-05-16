@@ -89,6 +89,7 @@ import { JSONLD } from "https://taisukef.github.io/jsonld-es/JSONLD.js";
 Example data and context used throughout examples below:
 ```js
 const doc = {
+  "@id": "https://example.com/1",
   "http://schema.org/name": "Manu Sporny",
   "http://schema.org/url": {"@id": "http://manu.sporny.org/"},
   "http://schema.org/image": {"@id": "http://manu.sporny.org/images/manu.png"}
@@ -207,7 +208,7 @@ console.log(JSON.stringify(flattened, null, 2));
 
 ```js
 // frame a document
-const framed = await JSONLD.frame(doc, frame);
+const framed = await JSONLD.frame(doc, context);
 console.log(JSON.stringify(framed, null, 2));
 // output transformed into a particular tree structure per the given frame
 /*
